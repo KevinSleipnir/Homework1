@@ -284,15 +284,21 @@ void movement(Game *game)
 	    }
 	}
 
-	float d0, d1, dist;
+	float d0, d1, dist, reg1, reg2;
 
 	d0 = p->s.center.x - game->circle.center.x;
 	d1 = p->s.center.y - game->circle.center.y;
 	dist = sqrt(d0*d0 + d1*d1);
+
+	reg1 = d0/dist;
+	reg2 = d1/dist;
+
 	if(dist < game->circle.radius){
-	    //collision! 
-	    p->velocity.x += d0/dist;
-	    p->velocity.y += d1/dist;
+	    //collision!
+	    p->s.center.x = game->circle.center.x + reg1*game->circle.radius;
+	    p->s.center.y = game->circle.center.y + reg2*game->circle.radius;
+	    p->velocity.x += d0/dist*5;
+	    p->velocity.y += d1/dist*5;
 	}
 
 
