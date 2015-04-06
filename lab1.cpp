@@ -64,8 +64,12 @@ struct Particle {
     Vec velocity;
 };
 
+
+
+
 struct Game {
     Shape box[MAX_BOXES];
+    Shape circle;
     Particle *particle;
     int n;
 
@@ -83,6 +87,10 @@ struct Game {
 	    box[i].center.x = 120 + i*65;
 	    box[i].center.y = 500 - i*60;
 	}
+
+	circle.radius = 150.0;
+	circle.center.x = 600;
+	circle.center.y = 0;
     }
 
 };
@@ -276,6 +284,19 @@ void movement(Game *game)
 	    }
 	}
 
+	float d0, d1, dist;
+
+	d0 = p->s.center.x - game->circle.center.x;
+	d1 = p->s.center.y - game->circle.center.y;
+	dist = sqrt(d0*d0 + d1*d1);
+	if(dist < game->circle.radius){
+	    //collision! 
+	    p->velocity.x += d0/dist;
+	    p->velocity.y += d1/dist;
+	}
+
+
+
 	//check for off-screen
 	if (p->s.center.y < 0.0) {
 	    memcpy(&game->particle[i], &game->particle[game->n-1], sizeof(Particle));
@@ -291,6 +312,31 @@ void render(Game *game)
     float w, h;
     glClear(GL_COLOR_BUFFER_BIT);
     //Draw shapes...
+
+
+    const int n = 40;
+    static Vec vert[n];
+    static int firsttime = 1;
+    if(firsttime){
+	float ang = 0.0, 
+	      inc = (3.14159 * 2.0) / (float)n;
+	for(int i= 0; i<n; i++){
+	    vert[i].x = cos(ang)*game->circle.radius;
+	    vert[i].y = sin(ang)*game->circle.radius;
+	    ang += inc;
+	}
+	firsttime = 0;
+    }
+
+    glBegin(GL_LINE_LOOP);
+    for(int i = 0; i < n; i++){
+	glVertex2i(vert[i].x + game->circle.center.x, vert[i].y + game->circle.center.y);
+    }
+
+    glEnd();
+
+
+
 
     //draw box
     Shape *s;
