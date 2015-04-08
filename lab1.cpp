@@ -89,7 +89,7 @@ struct Game {
 	}
 
 	circle.radius = 150.0;
-	circle.center.x = 600;
+	circle.center.x = 550;
 	circle.center.y = 0;
     }
 
@@ -278,6 +278,12 @@ void movement(Game *game)
 		    	if(p->s.center.y >= game->box[j].center.y +- game->box[j].height){
 			p->s.center.y = game->box[j].center.y + game->box[j].height;
 			p->velocity.y *= -0.5*rnd();
+			if(p->velocity.x < 0){
+			    p->velocity.x += -0.001;
+			}
+			else{
+			    p->velocity.x += 0.001;
+			}
 			}
 		    }
 		}
@@ -297,8 +303,8 @@ void movement(Game *game)
 	    //collision!
 	    p->s.center.x = game->circle.center.x + reg1*game->circle.radius;
 	    p->s.center.y = game->circle.center.y + reg2*game->circle.radius;
-	    p->velocity.x += d0/dist*5;
-	    p->velocity.y += d1/dist*5;
+	    p->velocity.x += d0/dist*2;
+	    p->velocity.y += d1/dist*2;
 	}
 
 
