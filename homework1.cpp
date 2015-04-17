@@ -72,6 +72,7 @@ struct Game {
     Shape circle;
     Particle *particle;
     int n;
+    bool bubbler;
 
     ~Game() {delete [] particle;}
 
@@ -83,13 +84,13 @@ struct Game {
 
 	for(int i = 0; i < MAX_BOXES; i++){
 	    box[i].width = 100;
-	    box[i].height = 10;
-	    box[i].center.x = 120 + i*65;
+	    box[i].height = 20;
+	    box[i].center.x = 150 + i*65;
 	    box[i].center.y = 500 - i*60;
 	}
 
 	circle.radius = 150.0;
-	circle.center.x = 550;
+	circle.center.x = 650;
 	circle.center.y = 0;
     }
 
@@ -202,11 +203,12 @@ void makeParticle(Game *game, int x, int y) {
     game->n++;
 }
 
+static int savex = 0;
+static int savey = 0;
+
 void check_mouse(XEvent *e, Game *game)
 {
-    static int savex = 0;
-    static int savey = 0;
-    static int n = 0;
+   static int n = 0;
 
     if (e->type == ButtonRelease) {
 	return;
@@ -237,6 +239,7 @@ void check_mouse(XEvent *e, Game *game)
 	}
     }
 
+
 }
 
 int check_keys(XEvent *e, Game *game)
@@ -249,6 +252,12 @@ int check_keys(XEvent *e, Game *game)
 	}
 	//You may check other keys here.
 
+	if(key == XK_b){
+	    if(game->bubbler == false)
+		game->bubbler = true;
+	    else
+		game->bubbler = false;
+	}
     }
     return 0;
 }
@@ -275,15 +284,15 @@ void movement(Game *game)
 	    if(p->s.center.x >= game->box[j].center.x - game->box[j].width){
 		if(p->s.center.x <= game->box[j].center.x + game->box[j].width){
 		    if(p->s.center.y < game->box[j].center.y + game->box[j].height){
-		    	if(p->s.center.y >= game->box[j].center.y +- game->box[j].height){
-			p->s.center.y = game->box[j].center.y + game->box[j].height;
-			p->velocity.y *= -0.5*rnd();
-			if(p->velocity.x < 0){
-			    p->velocity.x += -0.001;
-			}
-			else{
-			    p->velocity.x += 0.001;
-			}
+			if(p->s.center.y >= game->box[j].center.y +- game->box[j].height){
+			    p->s.center.y = game->box[j].center.y + game->box[j].height;
+			    p->velocity.y *= -0.5*rnd();
+			    if(p->velocity.x < 0){
+				p->velocity.x = abs(p->velocity.x) + 0.02;
+			    }
+			    else{
+				p->velocity.x += 0.02;
+			    }
 			}
 		    }
 		}
@@ -315,6 +324,8 @@ void movement(Game *game)
 	    std::cout << "off screen" << std::endl;
 	    game->n--;
 	}
+
+
     }
 }
 
@@ -383,7 +394,14 @@ void render(Game *game)
 	glEnd();
     }
     glPopMatrix();
+
+    if(game->bubbler){
+	int y = WINDOW_HEIGHT - savey;
+	for(int i = 0; i < 10; i++){
+	    makeParticle(game, savex, y);
+	}
+
+    }
+
 }
-
-
 
