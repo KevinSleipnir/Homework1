@@ -7,7 +7,7 @@ lab1: lab1.cpp
 	g++ lab1.cpp -Wall -olab1 -lX11 -lGL -lm
 
 homework1: homework1.cpp
-	g++ homework1.cpp -Wall -o homework1 -lX11 -lGL -lm
+	g++ homework1.cpp -Wall -o homework1 -lX11 -lGL -lm ./libggfonts.so
 
 clean:
 	rm -f lab1 homework1

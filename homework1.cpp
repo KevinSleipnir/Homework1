@@ -35,10 +35,14 @@
 #include <X11/keysym.h>
 #include <GL/glx.h>
 
+extern "C"{
+#include "fonts.h"
+}
+
 #define WINDOW_WIDTH  800
 #define WINDOW_HEIGHT 600
 
-#define MAX_PARTICLES 10000
+#define MAX_PARTICLES 50000
 #define GRAVITY 0.1
 #define MAX_BOXES 5
 
@@ -184,6 +188,7 @@ void init_opengl(void)
     glOrtho(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT, -1, 1);
     //Set the screen background color
     glClearColor(0.1, 0.1, 0.1, 1.0);
+    initialize_fonts();
 }
 
 
@@ -332,6 +337,7 @@ void movement(Game *game)
 
 void render(Game *game)
 {
+    Rect rect;
     float w, h;
     glClear(GL_COLOR_BUFFER_BIT);
     //Draw shapes...
@@ -351,6 +357,8 @@ void render(Game *game)
 	firsttime = 0;
     }
 
+
+    glColor3ub(90,140,90);
     glBegin(GL_LINE_LOOP);
     for(int i = 0; i < n; i++){
 	glVertex2i(vert[i].x + game->circle.center.x, vert[i].y + game->circle.center.y);
@@ -403,5 +411,44 @@ void render(Game *game)
 
     }
 
+    glEnable(GL_TEXTURE_2D);
+
+
+    rect.bot = game->box[0].center.y - .5*game->box[0].height;
+    rect.left = game->box[0].center.x;
+    ggprint16(&rect, 16, 0x0FFE800, "REQUIREMENTS");
+
+
+    rect.bot = game->box[1].center.y - .5*game->box[1].height;
+    rect.left = game->box[1].center.x;
+    ggprint16(&rect, 16, 0x0FFE800, "DESIGN");
+
+    rect.bot = game->box[2].center.y - .5*game->box[2].height;
+    rect.left = game->box[2].center.x;
+    ggprint16(&rect, 16, 0x0FFE800, "CODING");
+
+    rect.bot = game->box[3].center.y - .5*game->box[3].height;
+    rect.left = game->box[3].center.x;
+    ggprint16(&rect, 16, 0x0FFE800, "TESTING");
+
+    rect.bot = game->box[4].center.y - .5*game->box[4].height;
+    rect.left = game->box[4].center.x;
+    ggprint16(&rect, 16, 0x0FFE800, "MAINTENANCE");
+
+
+    rect.bot = WINDOW_HEIGHT - 25;
+    rect.left = 100;
+    ggprint16(&rect, 16, 0x0FFFFF0, "The Waterfall Model");
+
+    rect.bot = WINDOW_HEIGHT - 25;
+    rect.left = 400;
+    ggprint16(&rect, 16, 0x0FFFFF0, "(press B to activate bubbler)");
+
+
 }
+
+
+
+
+
 
